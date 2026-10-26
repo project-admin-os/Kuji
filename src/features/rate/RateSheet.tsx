@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { useStrings } from '@/shared/i18n';
-import { Icon } from '@/shared/icons';
-import { strings } from './strings';
+import { useEffect, useRef, useState } from "react";
+import { useStrings } from "@/shared/i18n";
+import { Icon } from "@/shared/icons";
+import { strings } from "./strings";
 
 /**
  * MOCK. Placeholder bottom sheet until the real review form is built.
@@ -13,17 +13,17 @@ import { strings } from './strings';
 const EXIT_MS = 220;
 
 const styles = {
-  overlay: 'fixed inset-0 z-50 flex items-end justify-center',
-  scrim: 'absolute inset-0 bg-scrim',
+  overlay: "fixed inset-0 z-50 flex items-end justify-center",
+  scrim: "absolute inset-0 bg-scrim",
   sheet:
-    'relative w-full max-w-md rounded-t-sheet bg-white px-6 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl',
-  handle: 'mx-auto mb-4 h-1.5 w-10 rounded-full bg-navy/15',
-  headerRow: 'flex items-center justify-between gap-4',
-  title: 'text-title font-bold',
+    "relative w-full max-w-md rounded-t-sheet bg-white px-6 pt-3 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-sheet",
+  handle: "mx-auto mb-4 h-1.5 w-10 rounded-full bg-navy/15",
+  headerRow: "flex items-center justify-between gap-4",
+  title: "text-title font-bold",
   closeButton:
-    'flex size-12 shrink-0 items-center justify-center rounded-full bg-mist transition active:scale-95 hover:bg-arctic',
-  closeIcon: 'size-5',
-  message: 'text-body mt-2 text-navy/65',
+    "flex size-12 shrink-0 items-center justify-center rounded-full bg-mist transition active:scale-95 hover:bg-arctic",
+  closeIcon: "size-5",
+  message: "text-body mt-2 text-navy/65",
 };
 
 interface RateSheetProps {
@@ -47,17 +47,17 @@ export function RateSheet({ onClose }: RateSheetProps) {
   // Escape key closes the sheet.
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setClosing(true);
+      if (event.key === "Escape") setClosing(true);
     }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // Lock page scroll while open, and give focus back when closed.
   useEffect(() => {
     const previousFocus = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
 
     return () => {
@@ -71,13 +71,13 @@ export function RateSheet({ onClose }: RateSheetProps) {
       <div
         aria-hidden="true"
         onClick={requestClose}
-        className={`${styles.scrim} ${closing ? 'animate-scrim-out' : 'animate-scrim-in'}`}
+        className={`${styles.scrim} ${closing ? "animate-scrim-out" : "animate-scrim-in"}`}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="rate-sheet-title"
-        className={`${styles.sheet} ${closing ? 'animate-slide-down' : 'animate-slide-up'}`}
+        className={`${styles.sheet} ${closing ? "animate-slide-down" : "animate-slide-up"}`}
       >
         <div aria-hidden="true" className={styles.handle} />
         <div className={styles.headerRow}>

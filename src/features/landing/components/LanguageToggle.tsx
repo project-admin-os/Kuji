@@ -7,10 +7,15 @@ interface LanguageToggleProps {
 
 const styles = {
   button:
-    'animate-fade-in text-small rounded-full border border-white/70 bg-white/80 px-4 py-2 font-bold transition active:scale-[0.98] hover:bg-white',
+    "animate-fade-in text-small flex min-h-12 min-w-12 items-center justify-center rounded-full border border-white/70 bg-white/80 px-4 font-medium transition active:scale-[0.98] hover:bg-white",
 };
 
-export function LanguageToggle({ label, ariaLabel, lang, onClick }: LanguageToggleProps) {
+export function LanguageToggle({
+  label,
+  ariaLabel,
+  lang,
+  onClick,
+}: LanguageToggleProps) {
   return (
     <button
       type="button"
