@@ -1,25 +1,3 @@
-/**
- * Tiny translation store (no library). Languages: 'en' and 'ar'.
- * Sets <html lang> and <html dir> automatically and remembers the choice.
- *
- * USE:
- *   1. Write your texts next to the feature:
- *        const en = { title: 'Menu' };
- *        const ar = { title: 'القائمة' };
- *        export const strings: Localized<typeof en> = { en, ar };
- *   2. Read them in a component:
- *        const s = useStrings(strings);
- *        return <h1>{s.title}</h1>;
- *   3. Switch language:
- *        const locale = useLocale();
- *        <button onClick={() => setLocale(locale === 'en' ? 'ar' : 'en')}>
- *
- * RULES:
- *   - No hardcoded text in components. Put it in a strings table.
- *   - Never set document.documentElement.lang/dir yourself. setLocale does it.
- *   - TypeScript forces `ar` to have exactly the same keys as `en`.
- */
-
 import { useSyncExternalStore } from 'react';
 
 // ==== Types ====

@@ -1,12 +1,8 @@
 import type { Localized } from "@/shared/i18n";
 
-// ==== 1. Branding ====
-
 const brand = {
   name: "Kuji",
 };
-
-// ==== 2. Social ====
 
 const social = {
   instagram: {
@@ -15,8 +11,6 @@ const social = {
     url: "https://www.instagram.com/kuji.coffee",
   },
 };
-
-// ==== 3. Branches ====
 
 interface Branch {
   id: string;
@@ -28,15 +22,13 @@ const branches: Branch[] = [
   {
     id: "algamaa",
     name: { en: "Hai Algama'a Branch", ar: "فرع حي الجامعة" },
-    mapsUrl: "https://bit.ly/3YIzr6p",
+    mapsUrl: "https://maps.app.goo.gl/AqECPJkPJjvG1qXB8",
   },
   {
     id: "teraa",
     name: { en: "Al Tera'a St. Branch", ar: "فرع شارع الترعة" },
-    mapsUrl: "https://bit.ly/3YN5sdq",
+    mapsUrl: "https://maps.app.goo.gl/MFAmWvbZj8jK2FRV6",
   },
 ];
-
-// ==== Export ====
 
 export const site = { brand, social, branches };

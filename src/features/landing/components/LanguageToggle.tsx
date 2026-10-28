@@ -7,7 +7,10 @@ interface LanguageToggleProps {
 
 const styles = {
   button:
-    "animate-fade-in text-small flex min-h-12 min-w-12 items-center justify-center rounded-full border border-white/70 bg-white/80 px-4 font-medium transition active:scale-[0.98] hover:bg-white",
+    "group animate-fade-in inline-flex min-h-12 min-w-12 items-center justify-center rounded-full p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+
+  label:
+    "pointer-events-none inline-flex min-h-9 min-w-9 w-fit items-center justify-center whitespace-nowrap rounded-full border border-white/70 bg-white/80 px-2 text-small font-medium transition group-hover:bg-white group-active:scale-[0.98]",
 };
 
 export function LanguageToggle({
@@ -24,7 +27,7 @@ export function LanguageToggle({
       lang={lang}
       className={styles.button}
     >
-      {label}
+      <span className={styles.label}>{label}</span>
     </button>
   );
 }

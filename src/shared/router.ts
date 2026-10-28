@@ -1,18 +1,3 @@
-/**
- * Tiny router (no library). Uses the browser History API.
- *
- * USE:
- *   const path = usePath();                          // read the current path
- *   <a href="/menu" onClick={handleInternalClick}>   // internal link, no page reload
- *   navigate('/menu');                               // go somewhere from code
- *   navigate('/admin', { replace: true });           // redirect without adding a Back entry
- *
- * RULES:
- *   - Only use handleInternalClick on links that start with "/".
- *     External links (Instagram, Maps) are plain <a> tags with no onClick.
- *   - Never call window.history.pushState yourself. Always use navigate().
- */
-
 import { useSyncExternalStore, type MouseEvent } from 'react';
 
 // ==== Store ====

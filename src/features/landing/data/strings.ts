@@ -13,7 +13,6 @@ const en = {
   rateHint: "Tell us how it went",
   followUs: "Follow us",
   findUs: "Find us",
-  openInMaps: "Open in Maps",
   newTab: "(opens in a new tab)",
 };
 
@@ -30,7 +29,6 @@ const ar: typeof en = {
   rateHint: "أخبرنا كيف كانت تجربتك",
   followUs: "تابعنا",
   findUs: "مواقعنا",
-  openInMaps: "افتح في الخرائط",
   newTab: "(يُفتح في تبويب جديد)",
 };
 

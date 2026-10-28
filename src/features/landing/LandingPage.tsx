@@ -1,17 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import avatar from "@/assets/avatar.jpg";
 import wordmark from "@/assets/wordmark.png";
-import { RateUs, preloadRateSheet } from "@/features/rate";
 import { setLocale, useLocale, useStrings } from "@/shared/i18n";
 import { handleInternalClick } from "@/shared/router";
+import { Background } from "@/features/landing/components/Background";
+import { LanguageToggle } from "@/features/landing/components/LanguageToggle";
 import { ButtonCard, ExternalCard, LinkCard } from "./components/ActionCard";
-import { Background } from "./components/Background";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
-import { LanguageToggle } from "./components/LanguageToggle";
 import { site } from "./data/site";
 import { strings } from "./data/strings";
 
+const loadRatePage = () =>
+  import("@/features/rate/RatePage").then((module) => ({
+    default: module.RatePage,
+  }));
+const RatePage = lazy(loadRatePage);
+const preloadRatePage = () => void loadRatePage().catch(() => {});
 
 const CURRENT_YEAR = new Date().getFullYear();
 const PRELOAD_DELAY_MS = 2000;
@@ -38,7 +43,7 @@ export function LandingPage() {
   const handleCloseRate = useCallback(() => setRateOpen(false), []);
 
   useEffect(() => {
-    const timer = window.setTimeout(preloadRateSheet, PRELOAD_DELAY_MS);
+    const timer = window.setTimeout(preloadRatePage, PRELOAD_DELAY_MS);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -83,7 +88,7 @@ export function LandingPage() {
                 title={s.rateTitle}
                 hint={s.rateHint}
                 onClick={handleOpenRate}
-                onWarm={preloadRateSheet}
+                onWarm={preloadRatePage}
               />
             </div>
 
@@ -110,7 +115,6 @@ export function LandingPage() {
                   index={3 + position}
                   icon="pin"
                   title={branch.name[locale]}
-                  hint={s.openInMaps}
                   href={branch.mapsUrl}
                   newTabLabel={s.newTab}
                 />
@@ -126,7 +130,11 @@ export function LandingPage() {
         />
       </div>
 
-      <RateUs open={rateOpen} onClose={handleCloseRate} />
+      {rateOpen && (
+        <Suspense fallback={null}>
+          <RatePage onClose={handleCloseRate} />
+        </Suspense>
+      )}
     </div>
   );
 }

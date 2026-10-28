@@ -1,20 +1,3 @@
-/**
- * Icon system (no library). Every icon is a stroke path on a 24x24 grid.
- *
- * USE:
- *   import { Icon } from '@/shared/icons';
- *   <Icon name="arrow" className="size-5 text-navy" />
- *   <Icon name="star" className="size-5 fill-yellow text-yellow" />  
- *
- * ADD AN ICON: add one line to PATHS below. The name appears in autocomplete.
- *
- * RULES:
- *   - Color comes from the text color (text-navy, text-white, ...).
- *   - Size comes from size-* classes. Without one, the icon is 24px.
- *   - Do not put onClick on <Icon />. Wrap it in a <button> or <a>.
- *   - An icon-only button needs aria-label, because icons are hidden from screen readers.
- */
-
 // ==== Icon data ====
 
 const PATHS = {
@@ -32,6 +15,14 @@ const PATHS = {
     "M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19H10M15 8l4 4-4 4M19 12H9",
   trash:
     "M5 7h14M9.5 7V5.2A1.2 1.2 0 0 1 10.7 4h2.6A1.2 1.2 0 0 1 14.5 5.2V7M18 7l-.8 12.1A2 2 0 0 1 15.2 21H8.8a2 2 0 0 1-2-1.9L6 7M10 11v6M14 11v6",
+  settings:
+    "M4 7h7M17 7h3M11 7a3 3 0 1 0 6 0 3 3 0 1 0-6 0M4 17h3M13 17h7M7 17a3 3 0 1 0 6 0 3 3 0 1 0-6 0",
+  eye: "M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM12 14.7a2.7 2.7 0 1 0 0-5.4 2.7 2.7 0 0 0 0 5.4z",
+  eyeOff:
+    "M4 4l16 16M9.9 5.8A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16 16 0 0 1-3 3.9M6.4 7.6A16.4 16.4 0 0 0 2.5 12S6 18.5 12 18.5c1.5 0 2.8-.4 4-.9M10 10a2.7 2.7 0 0 0 3.9 3.8",
+  refresh:
+    "M4 12a8 8 0 0 1 13.66-5.66M20 12a8 8 0 0 1-13.66 5.66M17 4v4.5h-4.5M7 20v-4.5h4.5",
+  copy: "M9 9.5h9A1.5 1.5 0 0 1 19.5 11v8A1.5 1.5 0 0 1 18 20.5H9A1.5 1.5 0 0 1 7.5 19v-8A1.5 1.5 0 0 1 9 9.5zM6 14.5h-.5A1.5 1.5 0 0 1 4 13V5a1.5 1.5 0 0 1 1.5-1.5H14A1.5 1.5 0 0 1 15.5 5v.5",
 } as const;
 
 // ==== Types ====
