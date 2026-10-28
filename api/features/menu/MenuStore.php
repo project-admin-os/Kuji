@@ -4,7 +4,7 @@ require_once __DIR__ . '/../admin/menu/MenuValidator.php';
 
 final class MenuStore
 {
-    private const MAX_FILE_BYTES = 262144;
+    private const MAX_FILE_BYTES = 524288;
 
     private static function directory(): string
     {
@@ -135,6 +135,9 @@ final class MenuStore
     private static function ensureDirectory(): void
     {
         $directory = self::directory();
+        if (is_link($directory)) {
+            throw new RuntimeException('Menu storage directory cannot be a symbolic link');
+        }
         if (!is_dir($directory) && !@mkdir($directory, 0700, true) && !is_dir($directory)) {
             throw new RuntimeException('Menu storage directory is unavailable');
         }

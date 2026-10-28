@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Locale } from "@/shared/i18n";
 import { useLocale } from "@/shared/i18n";
-import { localized } from "@/features/menu/lib/i18n";
 import type { MenuAddOn, MenuCategory, MenuData, MenuPairing, MenuProduct, MenuSize } from "@/features/menu/types";
 import { Toast } from "../components/Toast";
 import { AddOnEditor } from "./components/addons/AddOnEditor";
@@ -114,7 +113,7 @@ export function MenuTab() {
       signatures: menu.signatures.filter((id) => id !== product.id),
       pairings: menu.pairings.filter((pairing) => !pairing.items.includes(product.id)).map((item, sortOrder) => ({ ...item, sortOrder })),
       products: menu.products.filter((item) => item.id !== product.id).map((item, sortOrder) => ({ ...item, oftenOrderedWith: item.oftenOrderedWith.filter((id) => id !== product.id), sortOrder })),
-    })),
+    }));
   });
   const requestCategoryDelete = (category: MenuCategory) => {
     if ((categoryCounts[category.id] ?? 0) > 0) {

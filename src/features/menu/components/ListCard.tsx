@@ -2,6 +2,7 @@ import { Icon } from "@/shared/icons";
 import type { Locale } from "@/shared/i18n";
 import type { MenuProduct } from "../types";
 import type { MenuStrings } from "../data/strings";
+import { getProductPrice } from "../lib/pricing";
 import { formatPrice, localized } from "../lib/i18n";
 
 interface ListCardProps {
@@ -13,7 +14,11 @@ interface ListCardProps {
 }
 
 export function ListCard({ product, locale, strings, onSelect, featured = false }: ListCardProps) {
-  const price = product.price === null ? strings.priceOnRequest : formatPrice(product.price, locale);
+  const amount = getProductPrice(product);
+  const startsAt = product.price === null && product.sizes.some((size) => size.mode === "standalone");
+  const price = amount === null
+    ? strings.priceOnRequest
+    : `${startsAt ? `${strings.from} ` : ""}${formatPrice(amount, locale)}`;
   return (
     <button
       type="button"

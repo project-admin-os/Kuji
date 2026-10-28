@@ -24,6 +24,8 @@ export interface MenuStrings {
   total: string;
   totalUnavailable: string;
   priceOnRequest: string;
+  unavailable: string;
+  from: string;
   remove: string;
   increase: string;
   decrease: string;
@@ -35,6 +37,7 @@ export interface MenuStrings {
   retry: string;
   refreshFailed: string;
   starterMenu: string;
+  menuNotPublished: string;
   menuBeingPrepared: string;
   promoDismiss: string;
   openOffer: string;
@@ -67,6 +70,8 @@ export const strings: Localized<MenuStrings> = {
     total: "Estimated total",
     totalUnavailable: "Total appears when all item prices are set",
     priceOnRequest: "Price on request",
+    unavailable: "No longer available",
+    from: "From",
     remove: "Remove",
     increase: "Increase quantity",
     decrease: "Decrease quantity",
@@ -78,6 +83,7 @@ export const strings: Localized<MenuStrings> = {
     retry: "Try again",
     refreshFailed: "Could not refresh the menu. Showing the last available version.",
     starterMenu: "This menu is being prepared.",
+    menuNotPublished: "The live menu has not been published yet.",
     menuBeingPrepared: "Our menu is on its way. Please check back soon.",
     promoDismiss: "Dismiss promotion",
     openOffer: "View pairing",
@@ -108,6 +114,8 @@ export const strings: Localized<MenuStrings> = {
     total: "الإجمالي التقديري",
     totalUnavailable: "سيظهر الإجمالي بعد إضافة أسعار جميع المنتجات",
     priceOnRequest: "السعر عند الطلب",
+    unavailable: "لم يعد متاحًا",
+    from: "ابتداءً من",
     remove: "حذف",
     increase: "زيادة الكمية",
     decrease: "تقليل الكمية",
@@ -119,6 +127,7 @@ export const strings: Localized<MenuStrings> = {
     retry: "حاول مرة أخرى",
     refreshFailed: "تعذر تحديث القائمة. نعرض آخر نسخة متاحة.",
     starterMenu: "يتم تجهيز هذه القائمة.",
+    menuNotPublished: "لم يتم نشر القائمة الحالية بعد.",
     menuBeingPrepared: "قائمتنا قيد التجهيز. يرجى العودة قريباً.",
     promoDismiss: "إغلاق العرض",
     openOffer: "عرض الاختيار",

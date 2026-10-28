@@ -27,8 +27,8 @@ export function Feature() {
   const catalog = useMemo(() => buildCatalog(menu), [menu]);
   const categoryNav = catalog.categories.filter((entry) => entry.products.length > 0);
   const categoryIds = categoryNav.map(({ category }) => category.id);
-  const activeCategory = useScrollSpy(categoryIds);
   const ready = useIdle();
+  const activeCategory = useScrollSpy(ready ? categoryIds : []);
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
@@ -49,11 +49,11 @@ export function Feature() {
     return () => window.clearTimeout(timer);
   }, [notice]);
 
-  const closeProduct = useCallback(() => setSelectedProduct(null), []);
-  const closePairing = useCallback(() => setSelectedPairing(null), []);
-  const closeCategory = useCallback(() => setSelectedCategory(null), []);
-  const closeSearch = useCallback(() => setSearchOpen(false), []);
-  const closeOrder = useCallback(() => setOrderOpen(false), []);
+  const closeProduct = useCallback(() => setSelectedProduct(null), [setSelectedProduct]);
+  const closePairing = useCallback(() => setSelectedPairing(null), [setSelectedPairing]);
+  const closeCategory = useCallback(() => setSelectedCategory(null), [setSelectedCategory]);
+  const closeSearch = useCallback(() => setSearchOpen(false), [setSearchOpen]);
+  const closeOrder = useCallback(() => setOrderOpen(false), [setOrderOpen]);
 
   const openProduct = useCallback((product: MenuProduct) => {
     setSelectedPairing(null);
@@ -61,7 +61,7 @@ export function Feature() {
     setSearchOpen(false);
     setOrderOpen(false);
     setSelectedProduct(product);
-  }, []);
+  }, [setOrderOpen, setSearchOpen, setSelectedCategory, setSelectedPairing, setSelectedProduct]);
 
   const openPairing = useCallback((pairing: MenuPairing) => {
     setSelectedProduct(null);
@@ -69,25 +69,25 @@ export function Feature() {
     setSearchOpen(false);
     setOrderOpen(false);
     setSelectedPairing(pairing);
-  }, []);
+  }, [setOrderOpen, setSearchOpen, setSelectedCategory, setSelectedPairing, setSelectedProduct]);
 
   const openCategory = useCallback((category: MenuCategory) => {
     setSelectedProduct(null);
     setSelectedPairing(null);
     setSelectedCategory(category);
-  }, []);
+  }, [setSelectedCategory, setSelectedPairing, setSelectedProduct]);
 
   const handleProductAdd = useCallback((product: MenuProduct, sizeId: string | null, addOnIds: string[]) => {
     addProductOrder(product.id, sizeId, addOnIds);
     setSelectedProduct(null);
     setNotice(`${localized(product.name, locale)} · ${copy.added}`);
-  }, [copy.added, locale]);
+  }, [copy.added, locale, setNotice, setSelectedProduct]);
 
   const handlePairingAdd = useCallback((pairing: MenuPairing, products: Parameters<typeof addPairingOrder>[1]) => {
     addPairingOrder(pairing.id, products);
     setSelectedPairing(null);
     setNotice(copy.added);
-  }, [copy.added]);
+  }, [copy.added, setNotice, setSelectedPairing]);
 
   const scrollToCategory = (id: string) => {
     document.getElementById(`menu-section-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -100,9 +100,9 @@ export function Feature() {
   return (
     <main lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className="min-h-screen bg-mist text-navy">
       <Header strings={copy} onSearch={() => setSearchOpen(true)} />
-      {menuState.source === "seed" || menuState.refreshFailed ? (
+      {menuState.source === "seed" || menuState.refreshFailed || menuState.unpublished ? (
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-3 text-small text-navy/65 sm:px-8 lg:px-12" role="status">
-          <span>{menuState.refreshFailed ? copy.refreshFailed : copy.starterMenu}</span>
+          <span>{menuState.refreshFailed ? copy.refreshFailed : menuState.unpublished ? copy.menuNotPublished : copy.starterMenu}</span>
           {menuState.refreshFailed && <button type="button" onClick={() => void refreshMenu(true)} className="min-h-10 rounded-full bg-white px-4 font-semibold text-navy hover:bg-yellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy">{copy.retry}</button>}
         </div>
       ) : null}

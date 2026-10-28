@@ -8,10 +8,7 @@ export function useScrollSpy(ids: readonly string[]): string {
     const targets = stableIds.split("|").filter(Boolean)
       .map((id) => document.getElementById(`menu-section-${id}`))
       .filter((target): target is HTMLElement => target instanceof HTMLElement);
-    if (targets.length === 0) {
-      setActiveId("");
-      return;
-    }
+    if (targets.length === 0) return;
     const observer = new IntersectionObserver((entries) => {
       const visible = entries
         .filter((entry) => entry.isIntersecting)
@@ -24,5 +21,5 @@ export function useScrollSpy(ids: readonly string[]): string {
     return () => observer.disconnect();
   }, [stableIds]);
 
-  return activeId;
+  return ids.includes(activeId) ? activeId : ids[0] ?? "";
 }

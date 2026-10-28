@@ -32,7 +32,7 @@ export function useUnsavedGuard() {
       const target = event.target;
       const button = target instanceof Element ? target.closest("button") : null;
       if (!(button instanceof HTMLButtonElement) || button.disabled) return;
-      const label = (button.textContent ?? "").replace(/\s+/g, " ").trim();
+      const label = (button.getAttribute("aria-label") ?? button.textContent ?? "").replace(/\s+/g, " ").trim();
       if (!labels.has(label)) return;
       event.preventDefault();
       event.stopImmediatePropagation();

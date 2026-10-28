@@ -132,12 +132,7 @@ export async function publishMenuDraft(): Promise<PublishOutcome> {
     return { status: "saved" };
   } catch (error) {
     if (error instanceof ApiError && error.status === 409) {
-      let latest: MenuData | null = null;
-      try {
-        latest = await fetchAdminMenu();
-      } catch {
-        latest = null;
-      }
+      const latest = await fetchAdminMenu().catch(() => null);
       commit({
         ...current,
         saving: false,

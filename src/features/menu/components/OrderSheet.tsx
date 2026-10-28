@@ -2,6 +2,7 @@ import type { Locale } from "@/shared/i18n";
 import type { MenuData, OrderLine } from "../types";
 import type { MenuStrings } from "../data/strings";
 import { formatPrice, localized } from "../lib/i18n";
+import { isOrderLineAvailable } from "../lib/menuLogic";
 import { getLinePrice } from "../lib/pricing";
 import { clearOrder, removeOrderLine, setOrderNote, setOrderQuantity, useOrder } from "../orderStore";
 import { Icon } from "@/shared/icons";
@@ -22,7 +23,8 @@ function lineTitle(menu: MenuData, line: OrderLine, locale: Locale): string {
   }
   const first = menu.products.find((item) => item.id === line.products[0].productId);
   const second = menu.products.find((item) => item.id === line.products[1].productId);
-  return [first, second].filter(Boolean).map((product) => localized(product!.name, locale)).join(" + ");
+  if (!first || !second) return "";
+  return `${localized(first.name, locale)} + ${localized(second.name, locale)}`;
 }
 
 export function OrderSheet({ open, menu, locale, strings, onClose }: OrderSheetProps) {
@@ -33,15 +35,16 @@ export function OrderSheet({ open, menu, locale, strings, onClose }: OrderSheetP
         <div className="space-y-3">
           {order.lines.map((line) => {
             const unit = getLinePrice(menu, line);
+            const available = isOrderLineAvailable(menu, line);
             return <article key={line.id} className="flex items-center gap-3 rounded-2xl bg-white p-4">
               <div className="min-w-0 flex-1">
-                <h3 className="truncate font-bold">{lineTitle(menu, line, locale) || strings.priceOnRequest}</h3>
-                <p className="mt-1 text-small text-navy/55">{unit === null ? strings.priceOnRequest : formatPrice(unit * line.quantity, locale)}</p>
+                <h3 className="truncate font-bold">{lineTitle(menu, line, locale) || strings.unavailable}</h3>
+                <p className="mt-1 text-small text-navy/55">{!available ? strings.unavailable : unit === null ? strings.priceOnRequest : formatPrice(unit * line.quantity, locale)}</p>
               </div>
               <div className="flex items-center gap-1 rounded-full bg-mist p-1">
                 <button type="button" onClick={() => setOrderQuantity(line.id, line.quantity - 1)} className="grid size-9 place-items-center rounded-full hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy" aria-label={strings.decrease}><Icon name="minus" className="size-4" /></button>
                 <span className="min-w-7 text-center text-small font-bold" aria-label={strings.quantity}>{line.quantity}</span>
-                <button type="button" onClick={() => setOrderQuantity(line.id, line.quantity + 1)} className="grid size-9 place-items-center rounded-full hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy" aria-label={strings.increase}><Icon name="plus" className="size-4" /></button>
+                <button type="button" disabled={!available} onClick={() => setOrderQuantity(line.id, line.quantity + 1)} className="grid size-9 place-items-center rounded-full hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy" aria-label={strings.increase}><Icon name="plus" className="size-4" /></button>
               </div>
               <button type="button" onClick={() => removeOrderLine(line.id)} className="rounded-full px-2 py-2 text-caption font-semibold text-navy/55 hover:bg-mist hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy">{strings.remove}</button>
             </article>;

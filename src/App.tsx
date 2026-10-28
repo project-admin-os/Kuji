@@ -3,7 +3,7 @@ import { LandingPage } from "@/features/landing/LandingPage";
 import { usePath } from "@/shared/router";
 
 const MenuFeature = lazy(() =>
-  import("@/features/menu/Feature").then((module) => ({ default: module.MenuFeature })),
+  import("@/features/menu/Feature").then((module) => ({ default: module.Feature })),
 );
 
 const routes: Record<string, ComponentType> = {

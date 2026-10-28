@@ -6,7 +6,6 @@ import { AdminShell } from "./components/AdminShell";
 import { useNoindex } from "./components/hooks/useNoindex";
 import { NotFound } from "./components/NotFound";
 import { StatusScreen } from "./components/StatusScreen";
-import { TabPlaceholder } from "./components/TabPlaceholder";
 import { ADMIN_HOME, DEFAULT_TAB_PATH, LOGIN_PATH, TABS } from "./config";
 import { strings } from "./data/strings";
 import { LoginPage } from "./LoginPage";
@@ -109,15 +108,8 @@ function AdminScreens() {
           <Suspense fallback={<StatusScreen message={s.checking} />}>
             <MenuTab />
           </Suspense>
-        ) : tab.id === "settings" ? (
-          <SettingsTab />
         ) : (
-          <TabPlaceholder
-            icon={tab.icon}
-            title={s.tabs[tab.id]}
-            hint={s.tabHints[tab.id]}
-            badge={s.comingSoon}
-          />
+          <SettingsTab />
         )}
       </AdminShell>
     );

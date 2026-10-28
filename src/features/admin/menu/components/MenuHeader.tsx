@@ -11,7 +11,10 @@ interface MenuHeaderProps {
 }
 
 export function MenuHeader({ draft, published, dirty, locale, copy }: MenuHeaderProps) {
-  const updatedAt = published?.updatedAt ? new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(published.updatedAt)) : null;
+  const timestamp = published?.updatedAt ? Date.parse(published.updatedAt) : NaN;
+  const updatedAt = Number.isFinite(timestamp)
+    ? new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", { dateStyle: "medium", timeStyle: "short" }).format(new Date(timestamp))
+    : null;
   return (
     <header className="flex flex-wrap items-start justify-between gap-4">
       <div className="grid gap-1">

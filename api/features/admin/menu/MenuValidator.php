@@ -31,10 +31,10 @@ final class MenuValidator
         }
 
         $revision = $this->integer($value['revision'] ?? null, 'revision', 0, 2147483647);
-        $updatedAt = $this->text($value['updatedAt'] ?? '', 'updatedAt', 64);
+        $updatedAt = $this->text($value['updatedAt'] ?? null, 'updatedAt', 64);
 
         $categories = [];
-        $categoryRows = $this->rows($value['categories'] ?? [], 'categories', self::MAX_CATEGORIES);
+        $categoryRows = $this->rows($value['categories'] ?? null, 'categories', self::MAX_CATEGORIES);
         foreach ($categoryRows as $index => $row) {
             $path = "categories.$index";
             if (!is_array($row) || self::isList($row)) {
@@ -47,14 +47,14 @@ final class MenuValidator
                 'pill' => $this->localized($row['pill'] ?? null, "$path.pill", 24),
                 'title' => $this->localized($row['title'] ?? null, "$path.title", 60, true),
                 'subtitle' => $this->localized($row['subtitle'] ?? null, "$path.subtitle", 120),
-                'image' => $this->safeUrl($row['image'] ?? '', "$path.image", 2048),
+                'image' => $this->safeUrl($row['image'] ?? null, "$path.image", 2048),
                 'sortOrder' => $this->integer($row['sortOrder'] ?? null, "$path.sortOrder", 0, 10000),
             ];
         }
         $this->uniqueIds($categories, 'categories');
 
         $addOns = [];
-        $addOnRows = $this->rows($value['addOns'] ?? [], 'addOns', self::MAX_ADDONS);
+        $addOnRows = $this->rows($value['addOns'] ?? null, 'addOns', self::MAX_ADDONS);
         foreach ($addOnRows as $index => $row) {
             $path = "addOns.$index";
             if (!is_array($row) || self::isList($row)) {
@@ -73,19 +73,24 @@ final class MenuValidator
         $this->uniqueIds($addOns, 'addOns');
 
         $products = [];
-        $productRows = $this->rows($value['products'] ?? [], 'products', self::MAX_PRODUCTS);
+        $productRows = $this->rows($value['products'] ?? null, 'products', self::MAX_PRODUCTS);
         foreach ($productRows as $index => $row) {
             $path = "products.$index";
             if (!is_array($row) || self::isList($row)) {
                 $this->error($path, 'object');
                 continue;
             }
-            $price = $row['price'] ?? null;
-            if ($price !== null) {
-                $price = $this->integer($price, "$path.price", 0, self::MAX_PRICE);
+            if (!array_key_exists('price', $row)) {
+                $this->error("$path.price", 'integer_range');
+                $price = null;
+            } else {
+                $price = $row['price'];
+                if ($price !== null) {
+                    $price = $this->integer($price, "$path.price", 0, self::MAX_PRICE);
+                }
             }
             $sizes = [];
-            $sizeRows = $this->rows($row['sizes'] ?? [], "$path.sizes", 6);
+            $sizeRows = $this->rows($row['sizes'] ?? null, "$path.sizes", 6);
             foreach ($sizeRows as $sizeIndex => $size) {
                 $sizePath = "$path.sizes.$sizeIndex";
                 if (!is_array($size) || self::isList($size)) {
@@ -108,10 +113,10 @@ final class MenuValidator
                 'description' => $this->localized($row['description'] ?? null, "$path.description", 400),
                 'price' => $price,
                 'sizes' => $sizes,
-                'image' => $this->safeUrl($row['image'] ?? '', "$path.image", 2048),
-                'baristaAddOns' => $this->idList($row['baristaAddOns'] ?? [], "$path.baristaAddOns", 50),
-                'excludedAddOns' => $this->idList($row['excludedAddOns'] ?? [], "$path.excludedAddOns", 50),
-                'oftenOrderedWith' => $this->idList($row['oftenOrderedWith'] ?? [], "$path.oftenOrderedWith", 6),
+                'image' => $this->safeUrl($row['image'] ?? null, "$path.image", 2048),
+                'baristaAddOns' => $this->idList($row['baristaAddOns'] ?? null, "$path.baristaAddOns", 50),
+                'excludedAddOns' => $this->idList($row['excludedAddOns'] ?? null, "$path.excludedAddOns", 50),
+                'oftenOrderedWith' => $this->idList($row['oftenOrderedWith'] ?? null, "$path.oftenOrderedWith", 6),
                 'isNew' => $this->boolean($row['isNew'] ?? null, "$path.isNew"),
                 'inStock' => $this->boolean($row['inStock'] ?? null, "$path.inStock"),
                 'sortOrder' => $this->integer($row['sortOrder'] ?? null, "$path.sortOrder", 0, 10000),
@@ -119,10 +124,10 @@ final class MenuValidator
         }
         $this->uniqueIds($products, 'products');
 
-        $signatures = $this->idList($value['signatures'] ?? [], 'signatures', self::MAX_SIGNATURES);
+        $signatures = $this->idList($value['signatures'] ?? null, 'signatures', self::MAX_SIGNATURES);
 
         $pairings = [];
-        $pairingRows = $this->rows($value['pairings'] ?? [], 'pairings', self::MAX_PAIRINGS);
+        $pairingRows = $this->rows($value['pairings'] ?? null, 'pairings', self::MAX_PAIRINGS);
         foreach ($pairingRows as $index => $row) {
             $path = "pairings.$index";
             if (!is_array($row) || self::isList($row)) {
@@ -134,9 +139,14 @@ final class MenuValidator
                 $this->error("$path.items", 'two_products_required');
                 $items = [];
             }
-            $pairingPrice = $row['price'] ?? null;
-            if ($pairingPrice !== null) {
-                $pairingPrice = $this->integer($pairingPrice, "$path.price", 0, self::MAX_PRICE);
+            if (!array_key_exists('price', $row)) {
+                $this->error("$path.price", 'integer_range');
+                $pairingPrice = null;
+            } else {
+                $pairingPrice = $row['price'];
+                if ($pairingPrice !== null) {
+                    $pairingPrice = $this->integer($pairingPrice, "$path.price", 0, self::MAX_PRICE);
+                }
             }
             $pairings[] = [
                 'id' => $this->id($row['id'] ?? null, "$path.id"),
@@ -162,10 +172,10 @@ final class MenuValidator
             'enabled' => $popupEnabled,
             'title' => $this->localized($popupRow['title'] ?? null, 'popup.title', 60, $popupEnabled),
             'body' => $this->localized($popupRow['body'] ?? null, 'popup.body', 240, $popupEnabled),
-            'image' => $this->safeUrl($popupRow['image'] ?? '', 'popup.image', 2048),
+            'image' => $this->safeUrl($popupRow['image'] ?? null, 'popup.image', 2048),
             'ctaLabel' => $this->localized($popupRow['ctaLabel'] ?? null, 'popup.ctaLabel', 30, $popupEnabled),
-            'ctaUrl' => $this->safeUrl($popupRow['ctaUrl'] ?? '', 'popup.ctaUrl', 2048),
-            'delaySeconds' => $this->integer($popupRow['delaySeconds'] ?? 5, 'popup.delaySeconds', 1, 20),
+            'ctaUrl' => $this->safeUrl($popupRow['ctaUrl'] ?? null, 'popup.ctaUrl', 2048),
+            'delaySeconds' => $this->integer($popupRow['delaySeconds'] ?? null, 'popup.delaySeconds', 1, 20),
         ];
         if ($popupEnabled && $popup['ctaUrl'] === '') {
             $this->error('popup.ctaUrl', 'required');
@@ -193,6 +203,9 @@ final class MenuValidator
         foreach ($menu['products'] as $index => $product) {
             if (!in_array($product['categoryId'], $categoryIds, true)) {
                 $this->error("products.$index.categoryId", 'unknown_category');
+            }
+            if (array_intersect($product['baristaAddOns'], $product['excludedAddOns']) !== []) {
+                $this->error("products.$index.excludedAddOns", 'conflicting_addon');
             }
             foreach (['baristaAddOns', 'excludedAddOns'] as $field) {
                 foreach ($product[$field] as $id) {
@@ -284,7 +297,7 @@ final class MenuValidator
         }
         if (str_starts_with($value, '/') && !str_starts_with($value, '//')) {
             $decoded = rawurldecode($value);
-            if (str_contains($decoded, '\\') || preg_match('#(^|/)\.\.(?:/|$)#', $decoded)) {
+            if (str_starts_with($decoded, '//') || str_contains($decoded, '\\') || preg_match('#(^|/)\.\.(?:/|$)#', $decoded)) {
                 $this->error($path, 'unsafe_url');
                 return '';
             }

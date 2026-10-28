@@ -43,6 +43,7 @@ const en = {
   price: "Base price (EGP)",
   priceOnRequest: "Leave empty for price on request",
   image: "Image path or HTTPS URL",
+  urlHint: "Use a root-relative path or an HTTPS URL.",
   stock: "In stock",
   newBadge: "Mark as new",
   sizes: "Sizes and price options",
@@ -118,7 +119,7 @@ const en = {
   status: "Menu status",
 } as const;
 
-const ar: typeof en = {
+const ar = {
   title: "إدارة القائمة",
   intro: "عدّل القائمة العامة ثم انشر إصداراً عندما تصبح جاهزة.",
   loading: "جارٍ تحميل أحدث قائمة…",
@@ -161,6 +162,7 @@ const ar: typeof en = {
   price: "السعر الأساسي (جنيه)",
   priceOnRequest: "اتركه فارغاً لعرض السعر عند الطلب",
   image: "مسار الصورة أو رابط HTTPS",
+  urlHint: "استخدم مساراً يبدأ بشرطة مائلة أو رابط HTTPS.",
   stock: "متوفر",
   newBadge: "تمييزه كجديد",
   sizes: "الأحجام وخيارات السعر",
@@ -236,5 +238,7 @@ const ar: typeof en = {
   status: "حالة القائمة",
 };
 
-export type MenuAdminStrings = typeof en;
+type WidenStrings<T> = T extends string ? string : { [Key in keyof T]: WidenStrings<T[Key]> };
+
+export type MenuAdminStrings = WidenStrings<typeof en>;
 export const strings: Localized<MenuAdminStrings> = { en, ar };

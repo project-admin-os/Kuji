@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Locale } from "@/shared/i18n";
 import type { ConfiguredProduct, MenuData, MenuPairing, MenuProduct } from "../types";
 import type { MenuStrings } from "../data/strings";
-import { getProductPrice } from "../lib/pricing";
+import { getPairingPrice, getProductPrice } from "../lib/pricing";
 import { formatPrice, localized } from "../lib/i18n";
 import { useOptions } from "./hooks/useOptions";
 import { Sheet } from "./Sheet";
@@ -25,6 +25,12 @@ export function OfferSheet({ pairing, products, menu, locale, strings, onClose, 
   if (!pairing || !products) return null;
   const [first, second] = products;
   const title = localized(pairing.title, locale) || `${localized(first.name, locale)} + ${localized(second.name, locale)}`;
+  const configuredProducts: [ConfiguredProduct, ConfiguredProduct] = [
+    { productId: first.id, sizeId: firstSize, addOnIds: firstOptions.selected },
+    { productId: second.id, sizeId: secondSize, addOnIds: secondOptions.selected },
+  ];
+  const pairingTotal = getPairingPrice(menu, pairing, configuredProducts);
+  const available = first.inStock && second.inStock;
   const showProduct = (product: MenuProduct, selectedSize: string | null, setSelectedSize: (value: string | null) => void, options: ReturnType<typeof useOptions>) => (
     <div className="rounded-2xl bg-white p-4">
       <h3 className="font-bold">{localized(product.name, locale)}</h3>
@@ -51,13 +57,10 @@ export function OfferSheet({ pairing, products, menu, locale, strings, onClose, 
       </div>
       <div className="mt-5 flex items-center justify-between rounded-2xl bg-yellow/60 px-4 py-3 text-small">
         <span>{strings.total}</span>
-        <strong>{pairing.price === null ? strings.priceOnRequest : formatPrice(pairing.price, locale)}</strong>
+        <strong>{pairingTotal === null ? strings.priceOnRequest : formatPrice(pairingTotal, locale)}</strong>
       </div>
-      <button type="button" onClick={() => onAdd(pairing, [
-        { productId: first.id, sizeId: firstSize, addOnIds: firstOptions.selected },
-        { productId: second.id, sizeId: secondSize, addOnIds: secondOptions.selected },
-      ])} className="mt-5 min-h-12 w-full rounded-full bg-navy px-5 font-bold text-white transition hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow">
-        {strings.addToOrder}
+      <button type="button" onClick={() => onAdd(pairing, configuredProducts)} disabled={!available} className="mt-5 min-h-12 w-full rounded-full bg-navy px-5 font-bold text-white transition hover:bg-navy/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow disabled:cursor-not-allowed disabled:opacity-50">
+        {available ? strings.addToOrder : strings.soldOut}
       </button>
     </Sheet>
   );

@@ -22,7 +22,7 @@ function safeUrl(value: unknown): boolean {
   if (value === "") return true;
   if (value.startsWith("/") && !value.startsWith("//")) {
     const decoded = decodeURIComponentSafe(value);
-    return !decoded.includes("\\") && !/(^|\/)\.\.(\/|$)/.test(decoded);
+    return !decoded.startsWith("//") && !decoded.includes("\\") && !/(^|\/)\.\.(\/|$)/.test(decoded);
   }
   try {
     const url = new URL(value);
@@ -66,7 +66,11 @@ export function validateMenu(input: unknown): MenuIssue[] {
     const trimmed = value.trim();
     if (required && !trimmed) add(path, "required");
     if (codepoints(trimmed) > max) add(path, "too_long");
-    if (/[\u0000-\u001f\u007f]/.test(trimmed)) add(path, "control_character");
+    const hasControlCharacter = Array.from(trimmed).some((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code < 32 || code === 127;
+    });
+    if (hasControlCharacter) add(path, "control_character");
   };
   const l10n = (value: unknown, path: string, max: number, required = false) => {
     if (!isRecord(value)) {
@@ -85,7 +89,16 @@ export function validateMenu(input: unknown): MenuIssue[] {
     if (typeof value !== "boolean") add(path, "boolean");
   };
   const image = (value: unknown, path: string) => {
-    if (typeof value !== "string" || codepoints(value) > 2048 || !safeUrl(value)) add(path, "unsafe_url");
+    if (typeof value !== "string") {
+      add(path, "unsafe_url");
+      return;
+    }
+    const normalized = value.trim();
+    const hasControlCharacter = Array.from(normalized).some((character) => {
+      const code = character.codePointAt(0) ?? 0;
+      return code < 32 || code === 127;
+    });
+    if (codepoints(normalized) > 2048 || hasControlCharacter || !safeUrl(normalized)) add(path, "unsafe_url");
   };
   const unique = (values: unknown[], path: string) => {
     const ids = values.map((row) => isRecord(row) ? row.id : row);
