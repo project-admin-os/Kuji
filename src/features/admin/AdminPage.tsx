@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { useStrings } from "@/shared/i18n";
 import { navigate, usePath } from "@/shared/router";
 import { Background } from "./components/Background";
@@ -13,6 +13,11 @@ import { LoginPage } from "./LoginPage";
 import { ensureSession, retrySession, useSession } from "./session";
 import { ReviewsTab } from "./reviews/ReviewsTab";
 import { SettingsTab } from "./settings/SettingsTab";
+import { MenuUnsavedGuard } from "./menu/components/UnsavedGuard";
+
+const MenuTab = lazy(() =>
+  import("./menu/MenuTab").then((module) => ({ default: module.MenuTab })),
+);
 
 type Tab = (typeof TABS)[number];
 
@@ -97,8 +102,13 @@ function AdminScreens() {
     const { tab } = route;
     return (
       <AdminShell activeTab={tab.id}>
+        <MenuUnsavedGuard />
         {tab.id === "reviews" ? (
           <ReviewsTab />
+        ) : tab.id === "menu" ? (
+          <Suspense fallback={<StatusScreen message={s.checking} />}>
+            <MenuTab />
+          </Suspense>
         ) : tab.id === "settings" ? (
           <SettingsTab />
         ) : (
@@ -115,6 +125,7 @@ function AdminScreens() {
 
   return (
     <AdminShell activeTab={null}>
+      <MenuUnsavedGuard />
       <NotFound
         title={s.notFoundTitle}
         hint={s.notFoundHint}

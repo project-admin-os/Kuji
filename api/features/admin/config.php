@@ -8,13 +8,15 @@
 $auth     = require __DIR__ . '/auth/config.php';
 $feedback = require __DIR__ . '/feedback/config.php';
 $settings = require __DIR__ . '/settings/config.php';
+$menu = require __DIR__ . '/menu/config.php';
 
 return [
     'auth'     => $auth,
     'feedback' => $feedback,
     'settings' => $settings,
+    'menu'     => $menu,
 
-    'routes' => array_merge($auth['routes'], $feedback['routes'], $settings['routes']),
+    'routes' => array_merge($auth['routes'], $feedback['routes'], $settings['routes'], $menu['routes']),
 
     // tables created by database/migrate.php
     'migrations' => [

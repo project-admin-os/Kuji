@@ -2,8 +2,13 @@ import { lazy, Suspense, type ComponentType } from "react";
 import { LandingPage } from "@/features/landing/LandingPage";
 import { usePath } from "@/shared/router";
 
+const MenuFeature = lazy(() =>
+  import("@/features/menu/Feature").then((module) => ({ default: module.MenuFeature })),
+);
+
 const routes: Record<string, ComponentType> = {
   "/": LandingPage,
+  "/menu": MenuFeature,
 };
 
 const AdminPage = lazy(() =>
@@ -28,6 +33,11 @@ export default function App() {
 
   const Page = routes[path];
 
-  // Temporary: shows the path for pages that are not built yet.
-  return Page ? <Page /> : <main className="p-4">{path}</main>;
+  return Page ? (
+    <Suspense fallback={<main className="grid min-h-dvh place-items-center text-small text-navy/60" role="status">Loading…</main>}>
+      <Page />
+    </Suspense>
+  ) : (
+    <main className="p-4">{path}</main>
+  );
 }

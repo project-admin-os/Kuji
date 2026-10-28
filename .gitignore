@@ -27,3 +27,9 @@ dist-ssr
 .zip
 .txt
 .env
+
+# Runtime-managed menu content and atomic-write artifacts
+api/storage/menu.json
+api/storage/menu.json.bak
+api/storage/.menu.lock
+api/storage/.menu-*

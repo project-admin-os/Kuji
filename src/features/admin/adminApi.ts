@@ -2,6 +2,8 @@ import { apiGet, apiPost, ApiError } from "@/shared/api";
 import type { Locale } from "@/shared/i18n";
 import { SETTINGS_PATHS } from "./settings/config";
 import { expireSession, sessionEpoch, type AdminUser } from "./session";
+import { MENU_API } from "@/features/menu/config";
+import type { MenuData } from "@/features/menu/types";
 
 async function guard<T>(call: (fromEpoch: number) => Promise<T>): Promise<T> {
   const fromEpoch = sessionEpoch();
@@ -66,6 +68,36 @@ export async function deleteReviews(ids: number[]): Promise<DeleteReviewsResult>
   const result = await adminPost<DeleteReviewsResult>("/admin/feedback/delete", { ids });
   if (!result.ok) throw new ApiError(500, "Delete failed");
   return result;
+}
+
+// ==== Menu ====
+
+export interface AdminMenuResponse {
+  ok: true;
+  menu: MenuData;
+}
+
+export interface SaveAdminMenuResponse {
+  ok: true;
+  menu: MenuData;
+}
+
+export async function fetchAdminMenu(signal?: AbortSignal): Promise<MenuData | null> {
+  try {
+    const result = await adminGet<AdminMenuResponse>(MENU_API.admin, signal);
+    return result.ok ? result.menu : null;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404 && error.code === "menu_not_published") {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function saveAdminMenu(revision: number, menu: MenuData): Promise<MenuData> {
+  const result = await adminPost<SaveAdminMenuResponse>(MENU_API.save, { revision, menu });
+  if (!result.ok || !result.menu) throw new ApiError(500, "Menu save failed");
+  return result.menu;
 }
 
 // ==== Settings ====
